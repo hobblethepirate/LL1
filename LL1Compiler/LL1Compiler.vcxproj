@@ -78,7 +78,11 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="LL1.cpp" />
     <ClCompile Include="LL1Tester.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="LL1.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
