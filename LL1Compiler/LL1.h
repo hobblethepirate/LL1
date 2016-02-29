@@ -37,7 +37,7 @@ public:
 
 	//Prints all Terms
 	void PrintTerms() const;
-;
+
 	//handles lambdas
 	//Uses terms and iterators findif
 	bool CheckFor();
