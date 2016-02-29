@@ -1,0 +1,16 @@
+//First Set
+//S  = e,f,g,h,p,q
+//A  = e,f,?
+//B  = g,h,?
+//C  = p,q
+
+//Follow Set
+//S  = $
+//A  = g,h,p,q
+//B  = p,q
+//C  = d
+
+S = A B C d
+A = e|f|?
+B = g|h|?
+C = p|q

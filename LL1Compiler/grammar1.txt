@@ -1,0 +1,11 @@
+//First Set
+//S  = a
+//A  = b
+
+//Follow Set
+//S  = $
+//A  = c
+
+S = a A
+A = b c
+

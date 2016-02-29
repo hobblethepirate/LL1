@@ -1,0 +1,15 @@
+//Week7W16.ppt
+//First Set
+//S  = a,b,c
+//A  = a,?
+//B  = b,?
+
+//Follow Set
+//S  = $
+//A  = c,b
+//B  = c
+
+S = A B c
+A = a|?
+B = b|?
+
