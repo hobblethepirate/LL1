@@ -41,7 +41,7 @@ void LL1::ReadLine(string line)
 		
 		string lhs, rhs, tempLine;
 		Term temp1, temp2;
-
+		
 		int rightIndex, leftIndex = 0, a;
 
 		int pos = line.find('=');
@@ -62,7 +62,11 @@ void LL1::ReadLine(string line)
 			}
 		}
 		temp1.name = lhs;
-
+		if (temp1.name[0] == '*')
+		{
+			temp1.name =temp1.name.substr(1, temp1.name.length() - 1);
+			temp1.isStart = true;
+		}
 
 
 		//rhs may have spaces and pipes
@@ -130,7 +134,9 @@ void LL1::PrintTerms() const
 		}
 	}
 }
+
 //left factors the grammar and creates additional rules as needed.
+//happens only on the same parent
 void LL1::LeftFactor()
 {
 
@@ -151,6 +157,7 @@ void LL1::FollowSet()
 //Prints to an output file
 void LL1::PrintTable()
 {
+
 }
 
 

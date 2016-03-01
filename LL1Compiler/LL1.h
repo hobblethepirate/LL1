@@ -52,6 +52,7 @@ private:
 		//Need to be initialized to null
 		//sorted ideally
 		//coud be references
+		bool isStart;
 		vector<Term> children;
 	};
 
@@ -61,14 +62,14 @@ private:
 	//Returns true if a given term is a TerminalValue
 	bool IsTerminal(Term t) const;
 
-//Contains all terminals and non terminals after left factoring
-map<string, Term> mTermGroup;
+	//Contains all terminals and non terminals after left factoring
+	map<string, Term> mTermGroup;
 
-//Contains the first set for each production line after running the FirstSet Function
-map<string, Term> mFirstSet;
+	//Contains the first set for each production line after running the FirstSet Function
+	map<string, Term> mFirstSet;
 
-//Contains the follow set for each production line after running the FirstSet, and then FollowSet Function.
-map<string, Term> mFollowSet;
+	//Contains the follow set for each production line after running the FirstSet, and then FollowSet Function.
+	map<string, Term> mFollowSet;
 
 };
 

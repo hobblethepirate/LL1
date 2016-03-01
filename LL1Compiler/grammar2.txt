@@ -9,7 +9,7 @@
 //A  = c,b
 //B  = c
 
-S = A B c
+*S = A B c
 A = a|?
 B = b|?
 

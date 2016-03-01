@@ -10,7 +10,7 @@
 //B  = p,q
 //C  = d
 
-S = A B C d
+*S = A B C d
 A = e|f|?
 B = g|h|?
 C = p|q

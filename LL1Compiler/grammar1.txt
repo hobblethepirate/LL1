@@ -6,6 +6,6 @@
 //S  = $
 //A  = c
 
-S = a A
+*S = a A
 A = b c
 
