@@ -42,6 +42,7 @@ public:
 	//Uses terms and iterators findif
 	bool CheckFor();
 
+
 private:
 
 	struct Term
@@ -56,6 +57,9 @@ private:
 
 	//Inserts terms into the term group while performing the needed checking for existing terms
 	void InsertTerm(Term term);
+	
+	//Returns true if a given term is a TerminalValue
+	bool IsTerminal(Term t) const;
 
 //Contains all terminals and non terminals after left factoring
 map<string, Term> mTermGroup;

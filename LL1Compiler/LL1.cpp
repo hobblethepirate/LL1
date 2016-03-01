@@ -154,6 +154,13 @@ void LL1::PrintTable()
 }
 
 
+//returns true if the given term is Terminal Value (empty children)
+bool LL1::IsTerminal(Term t) const
+{
+	return t.children.empty();
+}
+
+
 //handles lambdas
 //Uses terms and iterators findif
 bool LL1::CheckFor()
