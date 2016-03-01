@@ -85,8 +85,8 @@ void LL1::ReadLine(string line)
 				{
 
 					temp2.name = rhs.substr(leftIndex, rightIndex-leftIndex);
-					temp1.children.push_back(temp2);
 					InsertTerm(temp2);
+					temp1.children.push_back(mTermGroup.find(temp2.name));
 					leftIndex = rightIndex + 1;
 					temp2.name = "";
 				}
@@ -94,8 +94,8 @@ void LL1::ReadLine(string line)
 		}
 		//everything left over needs to be inserted
 		temp2.name = rhs.substr(leftIndex, (rightIndex - leftIndex));
-		temp1.children.push_back(temp2);
 		InsertTerm(temp2);
+		temp1.children.push_back(mTermGroup.find(temp2.name));
 		InsertTerm(temp1);
 
 	}
@@ -123,9 +123,10 @@ void LL1::PrintTerms() const
 			cout << " has the children: ";
 			for (int count = 0; count < term.second.children.size() - 1; count++)
 			{
-				cout << term.second.children[count].name <<", ";
+				cout << term.second.children[count]->second.name <<", ";
 			}
-			cout << term.second.children[term.second.children.size() - 1].name << endl;
+			cout << term.second.children[term.second.children.size() - 1]->second.name << endl;
+		
 		}
 		else
 		{
@@ -133,13 +134,15 @@ void LL1::PrintTerms() const
 			
 		}
 	}
+
 }
+
 
 //left factors the grammar and creates additional rules as needed.
 //happens only on the same parent
 void LL1::LeftFactor()
 {
-
+	
 }
 
 //Put it in a data structure (FirstSet map) runs the checkFor for each grammar rule

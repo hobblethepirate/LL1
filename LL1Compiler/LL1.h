@@ -37,7 +37,7 @@ public:
 
 	//Prints all Terms
 	void PrintTerms() const;
-
+		
 	//handles lambdas
 	//Uses terms and iterators findif
 	bool CheckFor();
@@ -53,7 +53,7 @@ private:
 		//sorted ideally
 		//coud be references
 		bool isStart;
-		vector<Term> children;
+		vector<std::map<string, Term>::iterator> children;
 	};
 
 	//Inserts terms into the term group while performing the needed checking for existing terms
@@ -70,7 +70,7 @@ private:
 
 	//Contains the follow set for each production line after running the FirstSet, and then FollowSet Function.
 	map<string, Term> mFollowSet;
-
+	
 };
 
 
