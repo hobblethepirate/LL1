@@ -56,6 +56,9 @@ private:
 		vector<std::map<string, Term>::iterator> children;
 	};
 
+	//takes a vector and returns the longest matching string. Used in Left 
+	string FindLongestMatchingString(vector<string> vec);
+
 	//Inserts terms into the term group while performing the needed checking for existing terms
 	void InsertTerm(Term term);
 	
@@ -71,6 +74,7 @@ private:
 	//Contains the follow set for each production line after running the FirstSet, and then FollowSet Function.
 	map<string, Term> mFollowSet;
 	
+
 };
 
 
