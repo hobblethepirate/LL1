@@ -2,7 +2,7 @@
 #include <fstream>
 #include <iostream>
 
-LL1::LL1()
+LL1::LL1() :mTable()
 {
 
 }
@@ -239,10 +239,26 @@ void LL1::FollowSet()
 
 }
 
-//Prints to an output file
+//Prints to the console
 void LL1::PrintTable()
 {
+	if (mTable.empty() == true)
+	{
+		cout << "There is nothing to print." << endl;
+		return;
+	}
+	
+	for (auto col : mTable)
+	{
+		for (auto row : col.second)
+		{
 
+			cout <<"|"<< row.second;		
+			
+		}
+		cout << "|" << endl;
+		cout << endl;
+	}
 }
 
 
@@ -259,4 +275,13 @@ bool LL1::CheckFor()
 {
 
 	return false;
+}
+
+//
+// eg LL1A.InsertInTable(1, 0, "hi");
+void LL1::InsertInTable(int col, int row, string line)
+{
+	//A1  col, row
+	mTable[row][col] = line;
+	
 }

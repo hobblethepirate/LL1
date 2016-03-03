@@ -42,7 +42,6 @@ public:
 	//Uses terms and iterators findif
 	bool CheckFor();
 
-
 private:
 
 	struct Term
@@ -53,6 +52,14 @@ private:
 		//sorted ideally
 		//coud be references
 		bool isStart;
+
+		//removing this line perhaps for vector<ChildGroup> childGroups;
+		vector<std::map<string, Term>::iterator> children;
+	};
+
+
+	struct ChildGroup
+	{
 		vector<std::map<string, Term>::iterator> children;
 	};
 
@@ -65,6 +72,9 @@ private:
 	//Returns true if a given term is a TerminalValue
 	bool IsTerminal(Term t) const;
 
+	//Inserts items into the LL1 table
+	void InsertInTable(int x, int y, string line);
+	
 	//Contains all terminals and non terminals after left factoring
 	map<string, Term> mTermGroup;
 
@@ -74,7 +84,8 @@ private:
 	//Contains the follow set for each production line after running the FirstSet, and then FollowSet Function.
 	map<string, Term> mFollowSet;
 	
-
+	//This needs to be dynamic due to grammars changing in size.
+	map<int, map<int,string>> mTable;
 };
 
 

@@ -5,13 +5,6 @@ using namespace std;
 
 int main()
 {
-	//map<int, string> test;
-	//for (auto item : test)
-	//{
-
-	//}
-	////here is a random comment
-
 	LL1 LL1A;
 	LL1 LL1B;
 	LL1 LL1C;
