@@ -1,0 +1,5 @@
+//a more complicated test of a grammar
+*S = a B C|A B|C B|c A B
+A = a B|a c
+B = C a b|c
+C = A d|A c

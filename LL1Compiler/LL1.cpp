@@ -72,11 +72,9 @@ void LL1::ReadLine(string line)
 		
 		//push back the final child group
 		//rhs may have spaces and pipes
-		vector<string> childGroup;
-		string tempString = "";
-
-		childGroup.push_back(tempString);
-		int num = 0;
+		vector<string> tempVector;
+		temp1.childGroups.push_back(tempVector);
+		int groupNum = 0, posNum = 0;
 
 		for (rightIndex = 0; rightIndex < rhs.length(); rightIndex++)
 		{
@@ -91,14 +89,15 @@ void LL1::ReadLine(string line)
 				else
 				{
 					
-					temp2.name = rhs.substr(leftIndex, rightIndex-leftIndex);					
-					childGroup[num] = childGroup[num] + temp2.name;
+					temp2.name = rhs.substr(leftIndex, rightIndex-leftIndex);	
+					
+					temp1.childGroups[groupNum].push_back(temp2.name);
 					InsertTerm(temp2);
 					temp1.children.push_back(mTermGroup.find(temp2.name));
 					if (rhs[rightIndex] == '|')
 					{
-						childGroup.push_back(tempString);
-						num++;
+						temp1.childGroups.push_back(tempVector);
+						groupNum++;
 					}
 					leftIndex = rightIndex + 1;
 					temp2.name = "";
@@ -107,10 +106,9 @@ void LL1::ReadLine(string line)
 		}
 		//everything left over needs to be inserted
 		temp2.name = rhs.substr(leftIndex, (rightIndex - leftIndex));
-		childGroup[num] = childGroup[num] + temp2.name;
+		temp1.childGroups[groupNum].push_back(temp2.name);
 		InsertTerm(temp2);
 		temp1.children.push_back(mTermGroup.find(temp2.name));
-		temp1.childGroups = childGroup;
 		InsertTerm(temp1);
 
 	}
@@ -147,7 +145,31 @@ void LL1::InsertTerm(Term term)
 	if (mTermGroup.find(term.name) != mTermGroup.end())
 	{
 		//a redefinition should occur here
-		mTermGroup.at(term.name).children = term.children;
+		if (mTermGroup.at(term.name).children.empty() == true)
+		{
+			if (term.children.empty() == true)
+			{
+				return;
+			}
+			else
+			{
+				//the current version of the term has no children
+				mTermGroup.at(term.name).children = term.children;
+				mTermGroup.at(term.name).childGroups = term.childGroups;
+			}
+		}
+		else
+		{
+			//the current version of the term has children
+			for (auto child : term.children)
+			{		
+				mTermGroup.at(term.name).children.push_back(child);	
+			}
+			for (auto childGroup : term.childGroups)
+			{
+				mTermGroup.at(term.name).childGroups.push_back(childGroup);
+			}
+		}
 		return;
 	}
 
@@ -158,16 +180,29 @@ void LL1::PrintTerms() const
 {
 	for (auto term : mTermGroup)
 	{
-		cout << term.second.name;
+		cout <<"["<<term.second.name<<"]";
 		if (!term.second.children.empty())
 		{
 			cout << " has the children: ";
-			for (int count = 0; count < term.second.children.size() - 1; count++)
+			for (int count = 0; count < term.second.children.size(); count++)
 			{
-				cout << term.second.children[count]->second.name <<", ";
+				cout << term.second.children[count]->second.name << ", ";
 			}
-			cout << term.second.children[term.second.children.size() - 1]->second.name << endl;
-		
+			cout << endl;
+			cout << " and has the childgroups: " << endl;
+			//if at term has children it has a childgroup
+			for (auto childGroup : term.second.childGroups)
+			{
+				if (childGroup.empty() != true)
+				{
+					for (int count = 0; count < childGroup.size(); count++)
+					{
+						cout << childGroup[count];
+					}
+					cout << " | " ;
+				}
+			}
+			cout << endl;
 		}
 		else
 		{
@@ -245,6 +280,52 @@ void LL1::LeftFactor()
 //Put it in a data structure (FirstSet map) runs the checkFor for each grammar rule
 void LL1::FirstSet()
 {
+	//Teacher's notes on the implementation
+	//1. Generate a set of non - terminals that can generate a lambda, called it the lambda set.
+	//	2. If B’s production begins with a terminal(eg.B->aX), then add a to First(B).
+	//	3. If B is in the lambda set, then add lambda to First(B)
+	//	4. If B begins with a non - terminal X(eg.B->XY)
+	//	a.Compute First(X) and add First(X) – lambda to First(B)
+	//	b.If X is in the lambda set, then add First(remainder) – lambda to First(B)
+	
+	
+	
+	//Go through the list of terms, find start
+	for (auto term : mTermGroup)
+	{
+		if (term.second.isStart == true)
+		{
+			//Recurse to leaves and calculate the first set of that leaf's parent
+			FirstRecurse(term.second);
+			//Replace non Terminals first sets with actual first sets
+			break;
+		}
+	}
+
+}
+
+void LL1::FirstRecurse(Term current)
+{
+	if (current.children.empty() == true)
+	{		
+		return;
+	}
+	else
+	{
+		//This child term has kids we should calculate it's first set first
+		for (auto child : current.children)
+		{
+
+			FirstRecurse(child->second);			
+		}
+		//next we need to calculate the current term's first set
+		for (auto childGroup : current.childGroups)
+		{
+			//start with the first childGroup
+			//Insert it into the first set even if it's non terminal
+			
+		}
+	}
 
 }
 
