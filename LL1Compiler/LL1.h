@@ -53,15 +53,13 @@ private:
 		//coud be references
 		bool isStart;
 
+		vector<string> childGroups;
 		//removing this line perhaps for vector<ChildGroup> childGroups;
 		vector<std::map<string, Term>::iterator> children;
 	};
 
 
-	struct ChildGroup
-	{
-		vector<std::map<string, Term>::iterator> children;
-	};
+
 
 	//takes a vector and returns the longest matching string. Used in Left 
 	string FindLongestMatchingString(vector<string> vec);

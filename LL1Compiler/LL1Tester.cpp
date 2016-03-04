@@ -11,15 +11,15 @@ int main()
 
 	cout << "LL1 Compiler Tester" << endl;
 	
-	LL1A.LoadFile("grammar1.txt");
-	cout << "Printing out the terms found for grammar 1" << endl;
-	LL1A.PrintTerms();
-	system("pause");
+	//LL1A.LoadFile("grammar1.txt");
+	//cout << "Printing out the terms found for grammar 1" << endl;
+	//LL1A.PrintTerms();
+	//system("pause");
 
-	LL1B.LoadFile("grammar2.txt");
-	cout << "Printing out the terms found for grammar 2" << endl;
-	LL1B.PrintTerms();
-	system("pause");
+	//LL1B.LoadFile("grammar2.txt");
+	//cout << "Printing out the terms found for grammar 2" << endl;
+	//LL1B.PrintTerms();
+	//system("pause");
 
 	LL1C.LoadFile("grammar3.txt");
 	cout << "Printing out the terms found for grammar 3" << endl;

@@ -68,9 +68,16 @@ void LL1::ReadLine(string line)
 			temp1.isStart = true;
 		}
 
-
-		//rhs may have spaces and pipes
 		rhs = line.substr((pos + 1), (line.length() - pos));
+		
+		//push back the final child group
+		//rhs may have spaces and pipes
+		vector<string> childGroup;
+		string tempString = "";
+
+		childGroup.push_back(tempString);
+		int num = 0;
+
 		for (rightIndex = 0; rightIndex < rhs.length(); rightIndex++)
 		{
 			if (rhs[rightIndex] == '|' || rhs[rightIndex] == ' ')
@@ -83,10 +90,16 @@ void LL1::ReadLine(string line)
 				}
 				else
 				{
-
-					temp2.name = rhs.substr(leftIndex, rightIndex-leftIndex);
+					
+					temp2.name = rhs.substr(leftIndex, rightIndex-leftIndex);					
+					childGroup[num] = childGroup[num] + temp2.name;
 					InsertTerm(temp2);
 					temp1.children.push_back(mTermGroup.find(temp2.name));
+					if (rhs[rightIndex] == '|')
+					{
+						childGroup.push_back(tempString);
+						num++;
+					}
 					leftIndex = rightIndex + 1;
 					temp2.name = "";
 				}
@@ -94,8 +107,10 @@ void LL1::ReadLine(string line)
 		}
 		//everything left over needs to be inserted
 		temp2.name = rhs.substr(leftIndex, (rightIndex - leftIndex));
+		childGroup[num] = childGroup[num] + temp2.name;
 		InsertTerm(temp2);
 		temp1.children.push_back(mTermGroup.find(temp2.name));
+		temp1.childGroups = childGroup;
 		InsertTerm(temp1);
 
 	}
