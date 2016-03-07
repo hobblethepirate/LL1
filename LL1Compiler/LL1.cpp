@@ -286,6 +286,9 @@ void LL1::FirstSet()
 	//	a.Compute First(X) and add First(X) – lambda to First(B)
 	//	b.If X is in the lambda set, then add First(remainder) – lambda to First(B)
 	
+	// 1. Generate lambda set using checkfor
+		vector<string> lambdaSet;
+
 	
 	
 	//Go through the list of terms, find start
@@ -375,6 +378,7 @@ bool LL1::CheckFor(string s, char c)
 			//returns true if ? is found in C, checks all characters in all productions
 
 	std::size_t found;
+
 	//for each item in mTermGroup
 	for (auto item : mTermGroup)
 	{
@@ -397,6 +401,35 @@ bool LL1::CheckFor(string s, char c)
 	}
 	return false;
 }
+
+
+vector<string> LL1::GenerateLambdaSet()
+{
+	//returns an empty vector if fails to find any lambdas
+	//otherwise, will return a vector of strings, each string containing a production that has lambda
+	vector<string> vec;
+	std::size_t found;
+
+	//for each item in mTermGroup
+	for (auto item : mTermGroup)
+	{
+		for (auto child : item.second.childGroups)
+		{
+			//for each childgroup
+			//look for matching character
+			for (int i = 0; i < child.size(); ++i)
+			{
+				found = child[i].find('?');
+				if (found != std::string::npos)
+				{
+					vec.push_back(item.first);
+				}
+			}
+		}
+	}
+	return vec;
+}
+
 
 //
 // eg LL1A.InsertInTable(1, 0, "hi");

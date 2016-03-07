@@ -62,6 +62,9 @@ private:
 	//had to move below Term definition or throws compiler error :/
 	bool CheckFor(string, char);
 
+	//Generate Lambda set, returns vector of strings, each string a LHS identifier
+	vector<string> GenerateLambdaSet();
+
 	//Recurses to leaves from start
 	void FirstRecurse(Term current);
 
