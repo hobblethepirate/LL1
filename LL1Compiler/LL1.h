@@ -38,9 +38,7 @@ public:
 	//Prints all Terms
 	void PrintTerms() const;
 		
-	//handles lambdas
-	//Uses terms and iterators findif
-	bool CheckFor();
+
 
 private:
 
@@ -59,6 +57,10 @@ private:
 		vector<std::map<string, Term>::iterator> children;
 	};
 
+	//handles lambdas
+	//Uses terms and iterators findif
+	//had to move below Term definition or throws compiler error :/
+	bool CheckFor(string, char);
 
 	//Recurses to leaves from start
 	void FirstRecurse(Term current);

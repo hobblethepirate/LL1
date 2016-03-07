@@ -122,9 +122,9 @@ void LL1::ReadLine(string line)
 //remember, you must load all the strings to compare into a vec before you run this
 string LL1::FindLongestMatchingString(vector<string> vec)
 {
-	for (int i = 0; i < vec.size() - 1; ++i)
+	for (int i = 0; i < vec.size(); ++i) //the vec.size() - 1 could probably be changed to vec.size(), changed to vec.size
 	{
-		for (int k = 0; k < vec.size() - 1; ++k)
+		for (int k = 0; k < vec.size(); ++k) //was .size() - 1
 		{
 			for (int j = vec[i].length(); j > 0; --j)
 			{
@@ -218,8 +218,8 @@ void LL1::PrintTerms() const
 //happens only on the same parent
 void LL1::LeftFactor()
 {
-	//any new unit productions will be named 'J' and incremented by letter (K,L,M,N,O,P) as new productions needs to be formed
-	int correctionCount = 0;
+	//any new unit productions will be given a prime character '
+
 	//loop through every term in mTermGroup and perform the following:
 	for (auto term : mTermGroup)
 	{
@@ -247,7 +247,6 @@ void LL1::LeftFactor()
 
 			if (longest_string != "")
 			{
-				correctionCount += 1; //add 1 to correction count, at the end, if correctioncount is >0, we run the method again.
 				//create new term with the longest_string and lambda
 				Term temp_term;
 				temp_term.name = termName;
@@ -274,7 +273,6 @@ void LL1::LeftFactor()
 		}
 
 	}
-	if (correctionCount > 0) LeftFactor(); //calls recursively if it had to make any corrections, otherwise it will do nothing.
 }
 
 //Put it in a data structure (FirstSet map) runs the checkFor for each grammar rule
@@ -367,9 +365,36 @@ bool LL1::IsTerminal(Term t) const
 
 //handles lambdas
 //Uses terms and iterators findif
-bool LL1::CheckFor()
+//pretty much only useful for finding lambdas in a LHS production
+bool LL1::CheckFor(string s, char c)
 {
+	//example usage:
+		//string s = "C";
+		//char c = '?';
+		//cout << "Checking " << s << " For " << c << " RESULT:" << CheckFor(s, c);
+			//returns true if ? is found in C, checks all characters in all productions
 
+	std::size_t found;
+	//for each item in mTermGroup
+	for (auto item : mTermGroup)
+	{
+		if (item.first == s) //this item's name matches the string (lhs S, A, B, C match)
+		{
+			for (auto child : item.second.childGroups)
+			{
+				//for each childgroup
+				//look for matching character
+				for (int i = 0; i < child.size(); ++i)
+				{
+					found = child[i].find(c);
+					if (found != std::string::npos)
+					{
+						return true;
+					}
+				}
+			}
+		}
+	}
 	return false;
 }
 

@@ -20,15 +20,15 @@ int main()
 	//LL1B.PrintTerms();
 	//system("pause");
 
-	//LL1C.LoadFile("grammar3.txt");
-	//cout << "Printing out the terms found for grammar 3" << endl;
-	//LL1C.PrintTerms();
-	//system("pause");
+	LL1C.LoadFile("grammar3.txt");
+	cout << "Printing out the terms found for grammar 3" << endl;
+	LL1C.PrintTerms();
+	system("pause");
 
-	LL1D.LoadFile("grammar4.txt");
+	/*LL1D.LoadFile("grammar4.txt");
 	cout << "Printing out the terms found for grammar 4" << endl;
 	LL1D.PrintTerms();
 	//LL1D.FirstSet();
-	system("pause");
+	system("pause");*/
 	return 0;
 }
