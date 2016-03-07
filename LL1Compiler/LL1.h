@@ -85,9 +85,12 @@ private:
 
 	//Contains the first set for each production line after running the FirstSet Function
 	map<string, Term> mFirstSet;
+	//mFirstSet was getting tricky to think about, I just put it into something simpler
+	map<string, vector<string>> grantFirstSet;
 
 	//Contains the follow set for each production line after running the FirstSet, and then FollowSet Function.
 	map<string, Term> mFollowSet;
+
 	
 	//This needs to be dynamic due to grammars changing in size.
 	map<int, map<int,string>> mTable;

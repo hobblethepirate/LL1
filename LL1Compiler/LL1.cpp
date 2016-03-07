@@ -1,6 +1,9 @@
 #include "LL1.h"
 #include <fstream>
 #include <iostream>
+#include <algorithm>
+#include <set>
+#include <vector>
 
 LL1::LL1() :mTable()
 {
@@ -283,15 +286,48 @@ void LL1::FirstSet()
 	//	2. If B’s production begins with a terminal(eg.B->aX), then add a to First(B).
 	//	3. If B is in the lambda set, then add lambda to First(B)
 	//	4. If B begins with a non - terminal X(eg.B->XY)
-	//	a.Compute First(X) and add First(X) – lambda to First(B)
-	//	b.If X is in the lambda set, then add First(remainder) – lambda to First(B)
+		//	a.Compute First(X) and add First(X) – lambda to First(B)
+		//	b.If X is in the lambda set, then add First(remainder) – lambda to First(B)
 	
-	// 1. Generate lambda set using checkfor
-		vector<string> lambdaSet;
 
+
+	// 1. Generate lambda set using GenerateLambdaSet
+	vector<string> lambdaSet = GenerateLambdaSet();
+	char c;
+
+	// 2. if B begins with a terminal x, add terminal x to First(B)
+		//map<string, Term> mFirstSet;
+		//temp1.children.push_back(mTermGroup.find(temp2.name));
+	for (auto term : mTermGroup)
+	{
+		//term.first is set name
+		for (auto child : term.second.childGroups)
+		{
+			//checks each character, childGroup[i], of each childGroup string 
+			// 2.if child[0] is lowercase, add it to First(X), where X is term.first
+			string s = child[0];
+			char c = s[0];
+			
+			if (c >= 'a' && c <= 'z')
+			{ //true if char is lowercase
+				//add to First(X), where X = term.first
+				//	map<string, Term> mFirstSet; this is difficult to wrap my head around, I'm going to attempt a simpler data structure
+				
+				cout << "FirstSet() call -- char: " << c << " has been added to grantFirstSet for LHS " << term.first << endl;
+				//warning as this will create duplicates sometimes
+
+				grantFirstSet[term.first].push_back(string(1, c)); //this pushes the char to the grantFirstSet
+
+				//remove any duplicates that were created, i tried alternative methods but they didn't work
+				std::sort(grantFirstSet[term.first].begin(), grantFirstSet[term.first].end());
+				grantFirstSet[term.first].erase(unique(grantFirstSet[term.first].begin(), grantFirstSet[term.first].end()), grantFirstSet[term.first].end());
+			}
+
+		}
+
+	}
 	
-	
-	//Go through the list of terms, find start
+	/*//Go through the list of terms, find start
 	for (auto term : mTermGroup)
 	{
 		if (term.second.isStart == true)
@@ -301,7 +337,7 @@ void LL1::FirstSet()
 			//Replace non Terminals first sets with actual first sets
 			break;
 		}
-	}
+	}*/
 
 }
 
