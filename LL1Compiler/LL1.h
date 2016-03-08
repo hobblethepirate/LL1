@@ -53,7 +53,7 @@ private:
 
 		//since a term can be a string, each child group consists of terms and each term
 		vector<vector<string>> childGroups;
-		//removing this line perhaps for vector<ChildGroup> childGroups;
+		
 		vector<std::map<string, Term>::iterator> children;
 	};
 

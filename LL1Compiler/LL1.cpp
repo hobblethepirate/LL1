@@ -367,8 +367,22 @@ void LL1::FirstRecurse(Term current)
 }
 
 //inserts the $ for the parent and uses the information from the first set and running checkFor.
+
 void LL1::FollowSet()
 {
+	//-Look for non - terminals on the right - hand side of the productions.
+	//	- Compute what could come after those non - terminals
+	//	- Use First set information
+	//	- $ - denotes end of input
+	//	1. Put $ in Follow(S) if S is the start symbol
+	//	2. If there is a production of the form : A->By where y is a terminal, add y to Follow(B)
+	//	3. If there is a production of the form : A->BC where C is a non - terminal, then add First(C) – lambda
+	//	to Follow(B)
+	//	4. If there is a production of the form A->BC, then add Follow(A) to Follow(C)
+	//	5. If there is a production of the form A->BC and C is in the lambda set, then add Follow(A) to
+	//	Follow(B)
+	//	6. If there is a production of the form A->BCD and C is in the lambda set, then add First(D) – lambda to
+	//	the Follow(B).
 
 }
 
