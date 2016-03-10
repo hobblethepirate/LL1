@@ -90,9 +90,8 @@ private:
 	map<string, Term> mTermGroup;
 
 	//Contains the first set for each production line after running the FirstSet Function
-	map<string, Term> mFirstSet;
 	//mFirstSet was getting tricky to think about, I just put it into something simpler
-	map<string, vector<string>> grantFirstSet;
+	map<string, vector<string>> mFirstSet;
 
 	//Contains the follow set for each production line after running the FirstSet, and then FollowSet Function.
 	map<string, vector<string>> mFollowSet;

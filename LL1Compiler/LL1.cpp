@@ -316,11 +316,11 @@ void LL1::FirstSet()
 				cout << "FirstSet() call -- char: " << c << " has been added to grantFirstSet for LHS " << term.first << endl;
 				//warning as this will create duplicates sometimes
 
-				grantFirstSet[term.first].push_back(string(1, c)); //this pushes the char to the grantFirstSet
+				mFirstSet[term.first].push_back(string(1, c)); //this pushes the char to the grantFirstSet
 
 				//remove any duplicates that were created, i tried alternative methods but they didn't work
-				std::sort(grantFirstSet[term.first].begin(), grantFirstSet[term.first].end());
-				grantFirstSet[term.first].erase(unique(grantFirstSet[term.first].begin(), grantFirstSet[term.first].end()), grantFirstSet[term.first].end());
+				std::sort(mFirstSet[term.first].begin(), mFirstSet[term.first].end());
+				mFirstSet[term.first].erase(unique(mFirstSet[term.first].begin(), mFirstSet[term.first].end()), mFirstSet[term.first].end());
 			}
 
 		}
@@ -414,7 +414,7 @@ void LL1::FollowSet()
 
 						//	3. If there is a production of the form : A->BC where C is a non - terminal, then add First(C) – lambda
 						//	to Follow(B)
-						for (auto firstSetItem : grantFirstSet[childGroup[1]])
+						for (auto firstSetItem : mFirstSet[childGroup[1]])
 						{
 							if (firstSetItem != "?")
 							{
@@ -447,7 +447,7 @@ void LL1::FollowSet()
 								//	the Follow(B).
 								if (childGroup.size >= 2 && IsUpper(childGroup[2])==true)
 								{
-									for (auto firstSetItem : grantFirstSet[childGroup[2]])
+									for (auto firstSetItem : mFirstSet[childGroup[2]])
 									{
 										if (firstSetItem != "?")
 										{
