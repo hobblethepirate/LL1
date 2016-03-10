@@ -374,16 +374,96 @@ void LL1::FollowSet()
 	//	- Compute what could come after those non - terminals
 	//	- Use First set information
 	//	- $ - denotes end of input
-	//	1. Put $ in Follow(S) if S is the start symbol
-	//	2. If there is a production of the form : A->By where y is a terminal, add y to Follow(B)
-	//	3. If there is a production of the form : A->BC where C is a non - terminal, then add First(C) – lambda
-	//	to Follow(B)
-	//	4. If there is a production of the form A->BC, then add Follow(A) to Follow(C)
-	//	5. If there is a production of the form A->BC and C is in the lambda set, then add Follow(A) to
-	//	Follow(B)
-	//	6. If there is a production of the form A->BCD and C is in the lambda set, then add First(D) – lambda to
-	//	the Follow(B).
 
+	//
+		//1. Put $ in Follow(S) if S is the start symbol
+		//2. If there is a production of the form : A->By where y is a terminal, add y to Follow(B)
+		//3. If there is a production of the form : A->BC where C is a non - terminal, then add First(C) – lambda
+		//to Follow(B)
+		//4. If there is a production of the form A->BC, then add Follow(A) to Follow(C)
+		//5. If there is a production of the form A->BC and C is in the lambda set, then add Follow(A) to
+		//Follow(B)
+		//6. If there is a production of the form A->BCD and C is in the lambda set, then add First(D) – lambda to
+		//the Follow(B).
+	vector<string> lambdaSet = GenerateLambdaSet();
+	
+	for (auto term : mTermGroup)
+	{
+		if (term.second.isStart == true)
+		{
+			//	1. Put $ in Follow(S) if S is the start symbol	
+			mFollowSet[term.second.name].push_back("$");
+				
+		}
+		if (IsTerminal(term.second) == false)
+		{
+			//no follow set exists for terminal terms.
+			for (auto childGroup : term.second.childGroups)
+			{
+				
+				if (childGroup.size >=1 && IsUpper(childGroup[0]) == true)
+				{
+					//	2. If there is a production of the form : A->By where y is a terminal, add y to Follow(B)
+					if (IsUpper(childGroup[1]) == false)
+					{
+						mFollowSet[term.second.name].push_back(childGroup[1]);
+					} 
+					else
+					{
+						//non terminal second term
+
+						//	3. If there is a production of the form : A->BC where C is a non - terminal, then add First(C) – lambda
+						//	to Follow(B)
+						for (auto firstSetItem : grantFirstSet[childGroup[1]])
+						{
+							if (firstSetItem != "?")
+							{
+								mFollowSet[childGroup[0]].push_back(firstSetItem);
+							}
+						}
+						//	4. If there is a production of the form A->BC, then add Follow(A) to Follow(C)						
+						//This step may not work properly depending on the order of terms follow set A is in the proccess of changing
+						for (auto followSetItem : mFollowSet[term.second.name])
+						{
+							mFollowSet[childGroup[1]].push_back(followSetItem);
+						}
+
+
+
+						for (auto lambdaSetItem : lambdaSet)
+						{
+							
+							if (lambdaSetItem.compare(childGroup[1]) == 0)
+							{
+								//current second
+
+								//	5. If there is a production of the form A->BC and C is in the lambda set, then add Follow(A) to
+								//	Follow(B)
+								for (auto followSetItem : mFollowSet[term.second.name])
+								{
+									mFollowSet[childGroup[0]].push_back(followSetItem);
+								}
+								//	6. If there is a production of the form A->BCD and C is in the lambda set, then add First(D) – lambda to
+								//	the Follow(B).
+								if (childGroup.size >= 2 && IsUpper(childGroup[2])==true)
+								{
+									for (auto firstSetItem : grantFirstSet[childGroup[2]])
+									{
+										if (firstSetItem != "?")
+										{
+											mFollowSet[childGroup[1]].push_back(firstSetItem);
+										}
+									}
+								}
+								break;
+							}
+	
+						}
+					}			
+				}
+			}
+		}
+	}
 }
 
 //Prints to the console
@@ -408,6 +488,16 @@ void LL1::PrintTable()
 	}
 }
 
+bool LL1::IsUpper(string line)
+{
+	for (auto ch : line)
+	{
+		if (isupper(ch) == false)
+		{
+			return false;
+		}
+	}
+}
 
 //returns true if the given term is Terminal Value (empty children)
 bool LL1::IsTerminal(Term t) const

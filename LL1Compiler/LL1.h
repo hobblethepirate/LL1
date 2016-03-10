@@ -57,14 +57,20 @@ private:
 		vector<std::map<string, Term>::iterator> children;
 	};
 
+	struct FollowSetItem
+	{
+		vector<string> terms;
+		vector<std::map<string, FollowSetItem>::iterator> 
+	};
+
 	//handles lambdas
 	//Uses terms and iterators findif
 	//had to move below Term definition or throws compiler error :/
 	bool CheckFor(string, char);
-
+	bool IsUpper(string line);
 	//Generate Lambda set, returns vector of strings, each string a LHS identifier
 	vector<string> GenerateLambdaSet();
-
+		
 	//Recurses to leaves from start
 	void FirstRecurse(Term current);
 
@@ -89,9 +95,8 @@ private:
 	map<string, vector<string>> grantFirstSet;
 
 	//Contains the follow set for each production line after running the FirstSet, and then FollowSet Function.
-	map<string, Term> mFollowSet;
+	map<string, vector<string>> mFollowSet;
 
-	
 	//This needs to be dynamic due to grammars changing in size.
 	map<int, map<int,string>> mTable;
 };
