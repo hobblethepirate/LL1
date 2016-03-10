@@ -496,6 +496,73 @@ void LL1::FirstSetRecurse(string term)
 		return;
 	}
 	
+	//1. Generate a set of non - terminals that can generate a lambda, called it the lambda set.
+	// FirstSet is called before this so the lambda set exists
+
+
+
+	for (auto childGroup : mTermGroup[term].childGroups)
+	{
+		if (childGroup.size >= 1)
+		{
+			if (IsUpper(childGroup[0]))
+			{
+					//non Terminal Child
+
+				//	4. If B begins with a non - terminal X(eg.B->XY)
+				//	a.Compute First(X) and add First(X) – lambda to First(B)
+				FirstSetRecurse(childGroup[0]);
+				for (auto firstSetItem : mFirstSet[childGroup[0]])
+				{
+					if (firstSetItem.compare("?") != 0)
+					{
+						mFirstSet[term].push_back(firstSetItem);
+					}
+				}
+				
+				//	b.If X is in the lambda set, then add First(remainder) – lambda to First(B)
+				if (childGroup.size >= 2)
+				{
+					for (auto lambdaSetItem : mLambdaSet)
+					{
+						if (lambdaSetItem.compare(childGroup[0]) == 0)
+						{
+							for (int count = 1; count < childGroup.size; count++)
+							{
+								FirstSetRecurse(childGroup[count]);
+
+								for (auto firstSetItem : mFirstSet[childGroup[count]])
+								{
+									if (firstSetItem.compare("?") != 0)
+									{
+										mFirstSet[term].push_back(firstSetItem);
+									}
+								}
+							}
+
+							break;
+						}
+					}
+				}
+			}
+			else
+			{
+				//	2. If B’s production begins with a terminal(eg.B->aX), then add a to First(B).
+				//terminal Child (wow that sound's bad)
+				mFirstSet[term].push_back(childGroup[0]);
+			}
+		}
+	}
+
+	//	3. If B is in the lambda set, then add lambda to First(B)
+	for (auto lambdaSetItem : mLambdaSet)
+	{
+		if (lambdaSetItem.compare(term) == 0)
+		{
+			//B is in the lambda set
+			mFirstSet[term].push_back("?");
+		}
+	}
 
 	
 }
