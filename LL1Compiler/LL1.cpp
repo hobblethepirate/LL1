@@ -292,8 +292,7 @@ void LL1::FirstSet()
 
 
 	// 1. Generate lambda set using GenerateLambdaSet
-	vector<string> lambdaSet = GenerateLambdaSet();
-	char c;
+	mLambdaSet = GenerateLambdaSet();
 
 	// 2. if B begins with a terminal x, add terminal x to First(B)
 		//map<string, Term> mFirstSet;
@@ -303,68 +302,89 @@ void LL1::FirstSet()
 		//term.first is set name
 		for (auto child : term.second.childGroups)
 		{
+
 			//checks each character, childGroup[i], of each childGroup string 
 			// 2.if child[0] is lowercase, add it to First(X), where X is term.first
-			string s = child[0];
-			char c = s[0];
-			
-			if (c >= 'a' && c <= 'z')
-			{ //true if char is lowercase
-				//add to First(X), where X = term.first
-				//	map<string, Term> mFirstSet; this is difficult to wrap my head around, I'm going to attempt a simpler data structure
-				
-				cout << "FirstSet() call -- char: " << c << " has been added to grantFirstSet for LHS " << term.first << endl;
-				//warning as this will create duplicates sometimes
 
-				mFirstSet[term.first].push_back(string(1, c)); //this pushes the char to the grantFirstSet
 
-				//remove any duplicates that were created, i tried alternative methods but they didn't work
-				std::sort(mFirstSet[term.first].begin(), mFirstSet[term.first].end());
-				mFirstSet[term.first].erase(unique(mFirstSet[term.first].begin(), mFirstSet[term.first].end()), mFirstSet[term.first].end());
+
+			if (child.size > 1)
+			{
+				//	2. If B’s production begins with a terminal(eg.B->aX), then add a to First(B).{
+				if (IsUpper(child[0]) == false)
+				{
+					mFirstSet[term.second.name].push_back(child[0]);
+				}
+				else
+				{
+					//first term is non-terminal
+					//	4. If B begins with a non - terminal X(eg.B->XY)
+					//	a.Compute First(X) and add First(X) – lambda to First(B)
+					
+					FirstSetRecurse(child[0]);
+					for (auto firstSetItem : mFirstSet[child[0]])
+					{
+						if (firstSetItem.compare("?") != 0)
+						{
+							mFirstSet[term.second.name].push_back(firstSetItem);
+						}
+					}
+					//	b.If X is in the lambda set, then add First(remainder) – lambda to First(B)
+					for (auto lambdaSetItem : mLambdaSet)
+					{
+						if (lambdaSetItem.compare[child[0]] == 0)
+						{
+							//X is in the lambda set 
+							if (child.size > 1)
+							{
+								//calculate the first set(remainder)
+								for (int count = 1; count < child.size; count++)
+								{
+									FirstSetRecurse(child[count]);
+									
+									for (auto firstSetItem : mFirstSet[child[count]])
+									{
+										if (firstSetItem.compare("?") != 0)
+										{
+											mFirstSet[term.second.name].push_back(firstSetItem);
+										}
+									}
+
+								}
+							}
+						}
+					}
+				}
 			}
-
+			//string s = child[0];
+			//char c = s[0];
+			//
+			//if (c >= 'a' && c <= 'z')
+			//{ //true if char is lowercase
+			//	//add to First(X), where X = term.first
+			//	//	map<string, Term> mFirstSet; this is difficult to wrap my head around, I'm going to attempt a simpler data structure
+			//	
+			//	cout << "FirstSet() call -- char: " << c << " has been added to grantFirstSet for LHS " << term.first << endl;
+			//	//warning as this will create duplicates sometimes
+			//	mFirstSet[term.first].push_back(string(1, c)); //this pushes the char to the grantFirstSet
+			//	//remove any duplicates that were created, i tried alternative methods but they didn't work
+			//	std::sort(mFirstSet[term.first].begin(), mFirstSet[term.first].end());
+			//	mFirstSet[term.first].erase(unique(mFirstSet[term.first].begin(), mFirstSet[term.first].end()), mFirstSet[term.first].end());
+			//}
 		}
-
-	}
-	
-	/*//Go through the list of terms, find start
-	for (auto term : mTermGroup)
-	{
-		if (term.second.isStart == true)
+		//	3. If B is in the lambda set, then add lambda to First(B)
+		for (auto lambdaItem : mLambdaSet)
 		{
-			//Recurse to leaves and calculate the first set of that leaf's parent
-			FirstRecurse(term.second);
-			//Replace non Terminals first sets with actual first sets
-			break;
+			if (lambdaItem.compare(term.second.name) == 0)
+			{
+				//B is in the lambda set
+				mFirstSet[term.second.name].push_back("?");
+			}
 		}
-	}*/
-
+	}
 }
 
-void LL1::FirstRecurse(Term current)
-{
-	if (current.children.empty() == true)
-	{		
-		return;
-	}
-	else
-	{
-		//This child term has kids we should calculate it's first set first
-		for (auto child : current.children)
-		{
 
-			FirstRecurse(child->second);			
-		}
-		//next we need to calculate the current term's first set
-		for (auto childGroup : current.childGroups)
-		{
-			//start with the first childGroup
-			//Insert it into the first set even if it's non terminal
-			
-		}
-	}
-
-}
 
 //inserts the $ for the parent and uses the information from the first set and running checkFor.
 
@@ -385,7 +405,8 @@ void LL1::FollowSet()
 		//Follow(B)
 		//6. If there is a production of the form A->BCD and C is in the lambda set, then add First(D) – lambda to
 		//the Follow(B).
-	vector<string> lambdaSet = GenerateLambdaSet();
+	
+	/*vector<string> lambdaSet = GenerateLambdaSet();*/
 	
 	for (auto term : mTermGroup)
 	{
@@ -430,7 +451,7 @@ void LL1::FollowSet()
 
 
 
-						for (auto lambdaSetItem : lambdaSet)
+						for (auto lambdaSetItem : mLambdaSet)
 						{
 							
 							if (lambdaSetItem.compare(childGroup[1]) == 0)
@@ -466,6 +487,19 @@ void LL1::FollowSet()
 	}
 }
 
+//A recursive method for creating firstSets
+void LL1::FirstSetRecurse(string term)
+{
+	//Base case
+	if (IsTerminal(mTermGroup[term]))
+	{
+		return;
+	}
+	
+
+	
+}
+
 //Prints to the console
 void LL1::PrintTable()
 {
@@ -497,6 +531,7 @@ bool LL1::IsUpper(string line)
 			return false;
 		}
 	}
+	return true;
 }
 
 //returns true if the given term is Terminal Value (empty children)

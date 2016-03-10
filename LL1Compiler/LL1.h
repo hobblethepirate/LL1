@@ -57,23 +57,17 @@ private:
 		vector<std::map<string, Term>::iterator> children;
 	};
 
-	struct FollowSetItem
-	{
-		vector<string> terms;
-		vector<std::map<string, FollowSetItem>::iterator> 
-	};
 
 	//handles lambdas
 	//Uses terms and iterators findif
 	//had to move below Term definition or throws compiler error :/
 	bool CheckFor(string, char);
 	bool IsUpper(string line);
+	
+	void FirstSetRecurse(string term);
 	//Generate Lambda set, returns vector of strings, each string a LHS identifier
 	vector<string> GenerateLambdaSet();
 		
-	//Recurses to leaves from start
-	void FirstRecurse(Term current);
-
 	//takes a vector and returns the longest matching string. Used in Left 
 	string FindLongestMatchingString(vector<string> vec);
 
@@ -98,6 +92,8 @@ private:
 
 	//This needs to be dynamic due to grammars changing in size.
 	map<int, map<int,string>> mTable;
+
+	vector<string> mLambdaSet;
 };
 
 
