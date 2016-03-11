@@ -37,8 +37,15 @@ public:
 
 	//Prints all Terms
 	void PrintTerms() const;
-		
+	
+	//Prints the contents of FirstSet
+	void PrintFirstSet() const;
 
+	//Prints the contents of FollowSet
+	void PrintFollowSet() const;
+	
+	//adds items from the first and follow set into table.
+	void GenerateTable();
 
 private:
 
@@ -70,6 +77,12 @@ private:
 		
 	//takes a vector and returns the longest matching string. Used in Left 
 	string FindLongestMatchingString(vector<string> vec);
+
+	//A helper method to avoid duplicate in the firstSet
+	void InsertFirstSet(string term, string firstSetItem);
+
+	//A helper method to avoid duplicate in the followSet
+	void InsertFollowSet(string term, string followSetItem);
 
 	//Inserts terms into the term group while performing the needed checking for existing terms
 	void InsertTerm(Term term);
