@@ -30,7 +30,7 @@ int main()
 	LL1B.FirstSet();
 	LL1B.PrintFirstSet();
 
-	cout << "Follow set:" << endl;
+	cout << "Follow set:" << endl;	
 	LL1B.FollowSet();
 	LL1B.PrintFollowSet();
 	system("pause");

@@ -418,7 +418,7 @@ void LL1::FollowSet()
 		if (term.second.isStart == true)
 		{
 			//	1. Put $ in Follow(S) if S is the start symbol	
-			mFollowSet[term.second.name].push_back("$");
+			//mFollowSet[term.second.name].push_back("$");
 			InsertFollowSet(term.second.name, "$");
 		}
 		if (IsTerminal(term.second) == false)
@@ -427,7 +427,7 @@ void LL1::FollowSet()
 			for (auto childGroup : term.second.childGroups)
 			{
 				
-				if (childGroup.size() >=1 && IsUpper(childGroup[0]) == true)
+				if (childGroup.size() >1 )
 				{
 					//	2. If there is a production of the form : A->By where y is a terminal, add y to Follow(B)
 					if (IsUpper(childGroup[1]) == false)
@@ -435,6 +435,15 @@ void LL1::FollowSet()
 						//mFollowSet[term.second.name].push_back(childGroup[1]);
 						InsertFollowSet(term.second.name, childGroup[1]);
 					} 
+					else if (IsUpper(childGroup[0]) == false)
+					{
+						//first term is terminal, second term is non terminal
+						for (auto item : mFirstSet[childGroup[1]])
+						{
+							//add non-terminal's first set to follow set
+							InsertFollowSet(term.second.name, item);
+						}
+					}
 					else
 					{
 						//non terminal second term
