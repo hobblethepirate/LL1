@@ -129,7 +129,7 @@ string LL1::FindLongestMatchingString(vector<string> vec)
 	{
 		for (int k = 0; k < vec.size(); ++k) //was .size() - 1
 		{
-			for (int j = vec[i].length(); j > 0; --j)
+			for (int j = vec[i].length()-1; j > 0; --j)
 			{
 				if (i == k) ;
 				else if (strcmp(vec[i].substr(0, j).c_str(), vec[i + 1].substr(0, j).c_str()) == 0)
@@ -227,56 +227,121 @@ void LL1::LeftFactor()
 	for (auto term : mTermGroup)
 	{
 		string termName = term.second.name;
-		string oldTermName = termName;
-		termName += '\''; // this will be the left factored term name if we create one
+		string oldTermName = termName; //S
+		termName += '\''; // this will be the left factored term name if we create one - S => S'
 		vector<string> termVec;
 
-		//if not leaf, do your bidding... and left factor the term
 		if (!term.second.children.empty())
 		{
-			//place all children for given term into a temporary vector, which should make the calculations for comparison much simpler
-			for (int i = 0; i < term.second.children.size(); ++i)
+			for (auto childGroup : term.second.childGroups)
 			{
-				termVec.push_back(term.second.children[i]->second.name);
-				//we now have a full vector in termVec to do the left factorizations
-				//steps as follows:
-				//1. use strncmp to figure out matches
-				//2. create a new term with lambda and the matching 'magic string'
-					//you do a strncmp comparison on length of a given string to all others, if it ever hits 0, it looks for all matching 0, and declares that section the 'magic string'
-				//3. replace all instances of magic string with the termName
-
+				if (childGroup.empty() != true)
+				{
+					string s = "";
+					for (int count = 0; count < childGroup.size();count++)
+					{
+						s.append(childGroup[count]);
+					}
+					termVec.push_back(s);
+				}
 			}
-			string longest_string = FindLongestMatchingString(termVec);
-
-			if (longest_string != "")
-			{
-				//create new term with the longest_string and lambda
-				Term temp_term;
-				temp_term.name = termName;
-				
-				Term new_term;
-				Term lambda;
-				new_term.name = longest_string;
-				lambda.name = "?";
-
-				InsertTerm(new_term);
-				InsertTerm(lambda);
-				temp_term.children.push_back(mTermGroup.find(new_term.name));
-				temp_term.children.push_back(mTermGroup.find(lambda.name));
-
-				InsertTerm(temp_term);
-
-				//replace instances of longest string with the new term's name
-
-				//***TODO, need to modify here with replacement code for original string with the name
-				//need to modify the mTermGroup with the oldTermName.name field and modify all strings that look like longest_string with termName
-
-			}
-
 		}
+		//we now have a full vector in termVec to do the left factorizations
+		//steps as follows:
+		//1. use strncmp to figure out matches
+		//2. create a new term with lambda and the matching 'magic string'
+			//you do a strncmp comparison on length of a given string to all others, if it ever hits 0, it looks for all matching 0, and declares that section the 'magic string'
+		//3. replace all instances of magic string with the termName
 
+		string longest_string = FindLongestMatchingString(termVec);
+		//string longest_string = "";
+
+		if (longest_string != "")
+		{
+			//create new term with the longest_string and lambda
+			Term temp_term;
+			temp_term.name = termName;
+
+			Term new_term;
+			Term lambda;
+			new_term.name = longest_string;
+			lambda.name = "?";
+
+			InsertTerm(new_term);
+			InsertTerm(lambda);
+			temp_term.children.push_back(mTermGroup.find(new_term.name));
+			temp_term.children.push_back(mTermGroup.find(lambda.name));
+
+			InsertTerm(temp_term);
+
+			//grab termName's first production and print it out, termName is S', longest_string is aa, oldTermName is S
+			//now you loop through all terms. If the term's first name matches oldTermName, then you modify with replace function
+			//cout << "termName:" << termName << endl;
+			//cout << "oldTermName" << oldTermName << endl;
+
+			for (auto blob : mTermGroup)
+			{
+				if (blob.second.name == oldTermName)
+				{
+					//DEBUG
+					//cout << "A match! blob:" << blob.second.name << "with" << oldTermName << endl;
+					//cout << "entering loop" << endl;
+
+					for (int i = 0; i < blob.second.childGroups.size() - 1;++i) //loop for each child group
+					{
+						cout << "blob i:" << i << " is " << blob.second.childGroups[1].at(i) << endl;
+						cout << "longest_word i:" << i << " is " << longest_string[i] << endl;
+
+						bool isGood = false;
+						for (int count = 0; count < longest_string.length(); count++)
+						{
+							if ( blob.second.childGroups[i].at(count)[0] == longest_string[count])
+							{
+								isGood = true;
+								//cout << "WERE GOOD" << endl;
+							}
+							else
+								isGood = false;
+						}
+
+						if (isGood)
+						{
+							for (int count = 0;count < longest_string.length(); count++)
+							{
+								//replace eveyr character with characters of S'
+								if (count == 0)
+								{
+									blob.second.childGroups[i].at(count) = termName;
+
+									//DEBUG
+									//cout << "NEW NAME: " << blob.second.childGroups[i].at(count) << endl;
+								}
+								else //remaining characters for length of longest_string get erased in that term's childgroup
+								{
+									blob.second.childGroups[i].at(count).erase();
+
+									//DEBUG
+									//cout << "ERASED:" << blob.second.childGroups[i].at(count) << endl;
+								}
+							}
+						}
+					}
+				}
+			}
+		}
 	}
 }
+
+
+
+bool LL1::replace(std::string& str, const std::string& from, const std::string& to) {
+	size_t start_pos = str.find(from);
+	if (start_pos == std::string::npos)
+		return false;
+	str.replace(start_pos, from.length(), to);
+	return true;
+}
+
 
 //Put it in a data structure (FirstSet map) runs the checkFor for each grammar rule
 void LL1::FirstSet()
@@ -289,7 +354,6 @@ void LL1::FirstSet()
 		//	a.Compute First(X) and add First(X) – lambda to First(B)
 		//	b.If X is in the lambda set, then add First(remainder) – lambda to First(B)
 	
-
 
 	// 1. Generate lambda set using GenerateLambdaSet
 	mLambdaSet = GenerateLambdaSet();
@@ -307,8 +371,6 @@ void LL1::FirstSet()
 
 				//checks each character, childGroup[i], of each childGroup string 
 				// 2.if child[0] is lowercase, add it to First(X), where X is term.first
-
-
 
 				if (child.size() > 1)
 				{
@@ -381,21 +443,6 @@ void LL1::FirstSet()
 					}
 				}
 			}
-			//string s = child[0];
-			//char c = s[0];
-			//
-			//if (c >= 'a' && c <= 'z')
-			//{ //true if char is lowercase
-			//	//add to First(X), where X = term.first
-			//	//	map<string, Term> mFirstSet; this is difficult to wrap my head around, I'm going to attempt a simpler data structure
-			//	
-			//	cout << "FirstSet() call -- char: " << c << " has been added to grantFirstSet for LHS " << term.first << endl;
-			//	//warning as this will create duplicates sometimes
-			//	mFirstSet[term.first].push_back(string(1, c)); //this pushes the char to the grantFirstSet
-			//	//remove any duplicates that were created, i tried alternative methods but they didn't work
-			//	std::sort(mFirstSet[term.first].begin(), mFirstSet[term.first].end());
-			//	mFirstSet[term.first].erase(unique(mFirstSet[term.first].begin(), mFirstSet[term.first].end()), mFirstSet[term.first].end());
-			//}
 		}
 		//	3. If B is in the lambda set, then add lambda to First(B)
 		for (auto lambdaItem : mLambdaSet)
@@ -464,6 +511,26 @@ void LL1::FollowSet()
 						{
 							//add non-terminal's first set to follow set
 							InsertFollowSet(term.second.name, item);
+
+							//HOWEVER, if non-terminal contains lambda, you will also get the first set of the next term, and keep going until it doesn't return have lambda in term
+							/*bool hasLambda;
+							for (int i = 2; i < childGroup.size()-1; ++i)
+							{
+								hasLambda = CheckFor(childGroup[i], '?'); //check this char for lambda
+
+								//it has lambda add the first set of the next character if it's uppercase
+								if (hasLambda)
+								{
+									if (IsUpper(childGroup[i + 1]) == true)
+									{
+										InsertFollowSet(term.second.name, childGroup[i + 1]);
+									}
+								}
+								else
+								{
+									break; //break if no more lambdas
+								}
+							}*/
 						}
 					}
 					else

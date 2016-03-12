@@ -72,6 +72,8 @@ private:
 	bool IsUpper(string line);
 	bool IsInLambdaSet(string term);
 	void FirstSetRecurse(string term);
+	bool replace(std::string& str, const std::string& from, const std::string& to); //find replace of strings
+
 	//Generate Lambda set, returns vector of strings, each string a LHS identifier
 	vector<string> GenerateLambdaSet();
 		
