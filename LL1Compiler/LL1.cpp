@@ -289,8 +289,9 @@ void LL1::LeftFactor()
 
 					for (int i = 0; i < blob.second.childGroups.size() - 1;++i) //loop for each child group
 					{
-						cout << "blob i:" << i << " is " << blob.second.childGroups[1].at(i) << endl;
-						cout << "longest_word i:" << i << " is " << longest_string[i] << endl;
+						//DEBUG
+						//cout << "blob i:" << i << " is " << blob.second.childGroups[1].at(i) << endl;
+						//cout << "longest_word i:" << i << " is " << longest_string[i] << endl;
 
 						bool isGood = false;
 						for (int count = 0; count < longest_string.length(); count++)
@@ -311,10 +312,14 @@ void LL1::LeftFactor()
 								//replace eveyr character with characters of S'
 								if (count == 0)
 								{
-									blob.second.childGroups[i].at(count) = termName;
+									blob.second.childGroups[i].at(count) = termName[0];
 
 									//DEBUG
 									//cout << "NEW NAME: " << blob.second.childGroups[i].at(count) << endl;
+								}
+								else if (count == 1)
+								{
+									blob.second.childGroups[i].at(count) = termName[1];
 								}
 								else //remaining characters for length of longest_string get erased in that term's childgroup
 								{
