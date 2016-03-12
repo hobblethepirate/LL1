@@ -300,59 +300,81 @@ void LL1::FirstSet()
 	for (auto term : mTermGroup)
 	{
 		//term.first is set name
-		for (auto child : term.second.childGroups)
+		if (IsTerminal(term.second) == false)
 		{
-
-			//checks each character, childGroup[i], of each childGroup string 
-			// 2.if child[0] is lowercase, add it to First(X), where X is term.first
-
-
-
-			if (child.size() > 1)
+			for (auto child : term.second.childGroups)
 			{
-				//	2. If B’s production begins with a terminal(eg.B->aX), then add a to First(B).{
-				if (IsUpper(child[0]) == false)
-				{
-					//mFirstSet[term.second.name].push_back(child[0]);
-					InsertFirstSet(term.second.name, child[0]);
-				}
-				else
-				{
-					//first term is non-terminal
-					//	4. If B begins with a non - terminal X(eg.B->XY)
-					//	a.Compute First(X) and add First(X) – lambda to First(B)
-					
-					FirstSetRecurse(child[0]);
-					for (auto firstSetItem : mFirstSet[child[0]])
-					{
-						if (firstSetItem.compare("?") != 0)
-						{
-							//mFirstSet[term.second.name].push_back(firstSetItem);
-							InsertFirstSet(term.second.name, firstSetItem);
-						}
-					}
-					//	b.If X is in the lambda set, then add First(remainder) – lambda to First(B)
-					for (auto lambdaSetItem : mLambdaSet)
-					{
-						if (lambdaSetItem.compare(child[0]) == 0)
-						{
-							//X is in the lambda set 
-							if (child.size() > 1)
-							{
-								//calculate the first set(remainder)
-								for (int count = 1; count < child.size(); count++)
-								{
-									FirstSetRecurse(child[count]);
-									
-									for (auto firstSetItem : mFirstSet[child[count]])
-									{
-										if (firstSetItem.compare("?") != 0)
-										{
-											//mFirstSet[term.second.name].push_back(firstSetItem);
-											InsertFirstSet(term.second.name, firstSetItem);
-										}
-									}
 
+				//checks each character, childGroup[i], of each childGroup string 
+				// 2.if child[0] is lowercase, add it to First(X), where X is term.first
+
+
+
+				if (child.size() > 1)
+				{
+					//	2. If B’s production begins with a terminal(eg.B->aX), then add a to First(B).{
+					if (IsUpper(child[0]) == false)
+					{
+						//mFirstSet[term.second.name].push_back(child[0]);
+						InsertFirstSet(term.second.name, child[0]);
+					}
+					else
+					{
+						//first term is non-terminal
+						//	4. If B begins with a non - terminal X(eg.B->XY)
+						//	a.Compute First(X) and add First(X) – lambda to First(B)
+
+						FirstSetRecurse(child[0]);
+						for (auto firstSetItem : mFirstSet[child[0]])
+						{
+							if (firstSetItem.compare("?") != 0)
+							{
+								//mFirstSet[term.second.name].push_back(firstSetItem);
+								InsertFirstSet(term.second.name, firstSetItem);
+							}
+						}
+						//	b.If X is in the lambda set, then add First(remainder) – lambda to First(B)
+						for (auto lambdaSetItem : mLambdaSet)
+						{
+							if (lambdaSetItem.compare(child[0]) == 0)
+							{
+								//X is in the lambda set 
+								if (child.size() > 1)
+								{
+									//calculate the first set(remainder)
+									for (int count = 1; count < child.size(); count++)
+									{
+										FirstSetRecurse(child[count]);
+										if (IsUpper(child[count]) == true)
+										{
+											for (auto firstSetItem : mFirstSet[child[count]])
+											{
+												if (firstSetItem.compare("?") != 0)
+												{
+													//mFirstSet[term.second.name].push_back(firstSetItem);
+													InsertFirstSet(term.second.name, firstSetItem);
+												}
+											}
+										}
+										else
+										{
+											//Check for X number of non terminals exist before this terminal and
+											// if each non terminal goes to lambda eg PDQr	P->? D->? Q->? then r is in the first set
+											bool allTerminal = true;
+											for (int counter = 0; counter < count; counter++)
+											{
+												if (IsUpper(child[counter]) == false || IsInLambdaSet(child[counter]) == false)
+												{
+													allTerminal = false;
+												}
+											}
+											if (allTerminal == true)
+											{
+												InsertFirstSet(term.second.name, child[count]);
+											}
+										}
+
+									}
 								}
 							}
 						}
@@ -452,7 +474,7 @@ void LL1::FollowSet()
 						//	to Follow(B)
 						for (auto firstSetItem : mFirstSet[childGroup[1]])
 						{
-							if (firstSetItem != "?")
+							if (firstSetItem != "?" && firstSetItem != "$")
 							{
 								//mFollowSet[childGroup[0]].push_back(firstSetItem);
 								InsertFollowSet(childGroup[0], firstSetItem);
@@ -463,9 +485,11 @@ void LL1::FollowSet()
 						for (auto followSetItem : mFollowSet[term.second.name])
 						{
 							//mFollowSet[childGroup[1]].push_back(followSetItem);
-							InsertFollowSet(childGroup[1], followSetItem);
+							if (followSetItem != "$")
+							{
+								InsertFollowSet(childGroup[1], followSetItem);
+							}
 						}
-
 
 
 						for (auto lambdaSetItem : mLambdaSet)
@@ -473,6 +497,7 @@ void LL1::FollowSet()
 							
 							if (lambdaSetItem.compare(childGroup[1]) == 0)
 							{
+								
 								//current second
 
 								//	5. If there is a production of the form A->BC and C is in the lambda set, then add Follow(A) to
@@ -480,7 +505,10 @@ void LL1::FollowSet()
 								for (auto followSetItem : mFollowSet[term.second.name])
 								{
 									//mFollowSet[childGroup[0]].push_back(followSetItem);
-									InsertFollowSet(childGroup[0], followSetItem);
+									if (followSetItem != "$")
+									{
+										InsertFollowSet(childGroup[0], followSetItem);
+									}
 								}
 								//	6. If there is a production of the form A->BCD and C is in the lambda set, then add First(D) – lambda to
 								//	the Follow(B).
@@ -496,6 +524,37 @@ void LL1::FollowSet()
 									}
 								}
 								break;
+							}
+						
+							//Check through each child in childgroup
+							int rightBound;
+							for (rightBound = 0; rightBound <= childGroup.size(); rightBound++)
+							{
+								if (IsUpper(childGroup[rightBound]) != true)
+								{
+									break;
+								}
+							}
+							if (rightBound != 0)
+							{
+								bool allTerminal = true;
+								for (int counterTwo = 0; counterTwo < rightBound; counterTwo++)
+								{
+									
+									if (IsInLambdaSet(childGroup[counterTwo])==false)
+									{
+										allTerminal = false;
+									}
+								}
+								if (allTerminal == true)
+								{
+									//each character up to the terminal is a Nonterminal and in the lambda set
+									//the terminal needs to be added to the follow set for all Terminals before it
+									for (int counterTwo = 0; counterTwo < rightBound; counterTwo++)
+									{
+										InsertFollowSet(childGroup[counterTwo], childGroup[rightBound]);
+									}
+								}
 							}
 	
 						}
@@ -763,4 +822,16 @@ void LL1::InsertFollowSet(string term, string followSetItem)
 	}
 	//insert it
 	mFollowSet[term].push_back(followSetItem);
+}
+
+bool LL1::IsInLambdaSet(string term)
+{
+	for (auto lambdaItem : mLambdaSet) 
+	{
+		if (lambdaItem.compare(term) == 0)
+		{
+			return true;
+		}
+	}
+	return false;
 }

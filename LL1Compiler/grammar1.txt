@@ -3,9 +3,8 @@
 //A  = b
 
 //Follow Set
-//S  = $
+//S  = $ b
 //A  = c
 
 *S = a A
 A = b c
-

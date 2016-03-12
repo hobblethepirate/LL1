@@ -70,7 +70,7 @@ private:
 	//had to move below Term definition or throws compiler error :/
 	bool CheckFor(string, char);
 	bool IsUpper(string line);
-	
+	bool IsInLambdaSet(string term);
 	void FirstSetRecurse(string term);
 	//Generate Lambda set, returns vector of strings, each string a LHS identifier
 	vector<string> GenerateLambdaSet();
