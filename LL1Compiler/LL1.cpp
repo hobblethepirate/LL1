@@ -963,5 +963,18 @@ void LL1::GenerateTable()
 //This function is designed to help with printing out the grid
 string LL1::CrossReference(string non_terminal, string terminal)
 {
+	for (auto term : mTermGroup)
+	{
+		if (term.first == non_terminal) //find non_terminal in mTermGroup
+		{
+			//cycle through all childGroups/children for any groups that have the terminal parameter as a member of the first set, return the childgroup
+			//return childgroup e.g. "AaBc"
+		}
+		else
+		{
+			return nullptr;
+		}
+	}
+
 	return nullptr;
 }
