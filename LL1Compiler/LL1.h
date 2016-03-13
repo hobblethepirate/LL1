@@ -69,6 +69,7 @@ private:
 	//Uses terms and iterators findif
 	//had to move below Term definition or throws compiler error :/
 	bool CheckFor(string, char);
+	string CrossReference(string non_terminal, string terminal);
 	bool IsUpper(string line);
 	bool IsInLambdaSet(string term);
 	void FirstSetRecurse(string term);

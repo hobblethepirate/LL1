@@ -47,6 +47,8 @@ int main()
 	cout << "Follow set:" << endl;
 	LL1C.FollowSet();
 	LL1C.PrintFollowSet();
+	LL1C.GenerateTable();
+	LL1C.PrintTable();
 	system("pause");
 	
 
@@ -63,8 +65,8 @@ int main()
 	LL1D.PrintFollowSet();
 	system("pause");
 
-	LL1E.LoadFile("grammar5.txt");
-	LL1E.LeftFactor();
-	LL1E.PrintTerms();
+	//LL1E.LoadFile("grammar5.txt");
+	//LL1E.LeftFactor();
+	//LL1E.PrintTerms();
 	return 0;
 }

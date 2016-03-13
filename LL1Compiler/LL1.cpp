@@ -907,3 +907,61 @@ bool LL1::IsInLambdaSet(string term)
 	}
 	return false;
 }
+
+
+//this drops items from first and follow sets into the table mTable and using InsertInTable method
+void LL1::GenerateTable()
+{
+	//map<string, vector<string>> mFirstSet;
+	//Contains the follow set for each production line after running the FirstSet, and then FollowSet Function.
+	//map<string, vector<string>> mFollowSet;
+	//This needs to be dynamic due to grammars changing in size.
+	//map<int, map<int, string>> mTable;
+	// eg LL1A.InsertInTable(1, 0, "hi"); 1=row, 0=col
+	
+	//First you need to create all the rows for each non terminal, then you'll create columns for all terminals
+	//row 0 will be blank
+	int count = 1;
+
+	//print out rows
+	for (auto term : mFirstSet)
+	{
+		InsertInTable(0, count, term.first);
+		++count;
+	}
+
+	//print out columns based on list of terminals
+	//look at all children for start set
+	//insert dummy entry into upper left corner
+	InsertInTable(0, 0, "\t"); //upper left corner entry
+
+	int count2 = 1; // used in loop below
+	map<string,int> StrToInt;
+
+	for (auto term : mTermGroup)
+	{
+		if (term.second.children.empty()) //handles terminals only
+		{
+			//now, you create column after column for every terminal, at cross section with NonTerminal you use a function to grab the production
+
+			//debug: this prints out every terminal
+			//cout << "Here you would print out row: " << 0 << " and column " << count2 << endl;
+			InsertInTable(count2, 0, term.first + "\t"); //Insert in table doesn't seem to work.
+			
+			StrToInt[term.first] = count2; //this will help with mapping when creating the entries, you can put in the nonterminal and get back column number
+
+			count2++;			
+		}
+	}
+
+	//at this point the rows and cols are printed out on the grid. I'm going to work on a function called CheckFirstFirst:
+		// string LL1::CheckFirstFor(string checkthis, string forthis);
+}
+
+
+//This function cross references the NonTerminal production for a Terminal value in the first set. if exists, it returns the production that has that terminal in first set, else, returns nullptr
+//This function is designed to help with printing out the grid
+string LL1::CrossReference(string non_terminal, string terminal)
+{
+	return nullptr;
+}
