@@ -475,18 +475,18 @@ void LL1::FollowSet()
 	//	- $ - denotes end of input
 
 	//
-		//1. Put $ in Follow(S) if S is the start symbol
-		//2. If there is a production of the form : A->By where y is a terminal, add y to Follow(B)
-		//3. If there is a production of the form : A->BC where C is a non - terminal, then add First(C) – lambda
-		//to Follow(B)
-		//4. If there is a production of the form A->BC, then add Follow(A) to Follow(C)
-		//5. If there is a production of the form A->BC and C is in the lambda set, then add Follow(A) to
-		//Follow(B)
-		//6. If there is a production of the form A->BCD and C is in the lambda set, then add First(D) – lambda to
-		//the Follow(B).
-	
+	//1. Put $ in Follow(S) if S is the start symbol
+	//2. If there is a production of the form : A->By where y is a terminal, add y to Follow(B)
+	//3. If there is a production of the form : A->BC where C is a non - terminal, then add First(C) – lambda
+	//to Follow(B)
+	//4. If there is a production of the form A->BC, then add Follow(A) to Follow(C)
+	//5. If there is a production of the form A->BC and C is in the lambda set, then add Follow(A) to
+	//Follow(B)
+	//6. If there is a production of the form A->BCD and C is in the lambda set, then add First(D) – lambda to
+	//the Follow(B).
+
 	/*vector<string> lambdaSet = GenerateLambdaSet();*/
-	
+
 	for (auto term : mTermGroup)
 	{
 		if (term.second.isStart == true)
@@ -500,142 +500,154 @@ void LL1::FollowSet()
 			//no follow set exists for terminal terms.
 			for (auto childGroup : term.second.childGroups)
 			{
-				
-				if (childGroup.size() >1 )
+
+				//Check through each child in childgroup
+				int rightBound;
+				for (rightBound = 0; rightBound < childGroup.size(); rightBound++)
 				{
-					//	2. If there is a production of the form : A->By where y is a terminal, add y to Follow(B)
-					if (IsUpper(childGroup[1]) == false)
+					if (IsUpper(childGroup[rightBound]) != true)
 					{
-						//mFollowSet[term.second.name].push_back(childGroup[1]);
-						InsertFollowSet(term.second.name, childGroup[1]);
-					} 
-					else if (IsUpper(childGroup[0]) == false)
-					{
-						//first term is terminal, second term is non terminal
-						for (auto item : mFirstSet[childGroup[1]])
-						{
-							//add non-terminal's first set to follow set
-							InsertFollowSet(term.second.name, item);
-
-							//HOWEVER, if non-terminal contains lambda, you will also get the first set of the next term, and keep going until it doesn't return have lambda in term
-							/*bool hasLambda;
-							for (int i = 2; i < childGroup.size()-1; ++i)
-							{
-								hasLambda = CheckFor(childGroup[i], '?'); //check this char for lambda
-
-								//it has lambda add the first set of the next character if it's uppercase
-								if (hasLambda)
-								{
-									if (IsUpper(childGroup[i + 1]) == true)
-									{
-										InsertFollowSet(term.second.name, childGroup[i + 1]);
-									}
-								}
-								else
-								{
-									break; //break if no more lambdas
-								}
-							}*/
-						}
+						break;
 					}
-					else
+				}
+				if (rightBound == 0)
+				{
+					//first child of the child group is terminal, check to see if the second child term of  is a non terminal
+					
+					//search to the right for a second terminal, 
+					if (childGroup.size() > 1)
 					{
-						//non terminal second term
-
-						//	3. If there is a production of the form : A->BC where C is a non - terminal, then add First(C) – lambda
-						//	to Follow(B)
-						for (auto firstSetItem : mFirstSet[childGroup[1]])
+						int secondTerminal;
+						for (secondTerminal = 1; secondTerminal < childGroup.size(); secondTerminal++)
 						{
-							if (firstSetItem != "?" && firstSetItem != "$")
+							if (IsUpper(childGroup[secondTerminal]) == false)
 							{
-								//mFollowSet[childGroup[0]].push_back(firstSetItem);
-								InsertFollowSet(childGroup[0], firstSetItem);
-							}
-						}
-						//	4. If there is a production of the form A->BC, then add Follow(A) to Follow(C)						
-						//This step may not work properly depending on the order of terms follow set A is in the proccess of changing
-						for (auto followSetItem : mFollowSet[term.second.name])
-						{
-							//mFollowSet[childGroup[1]].push_back(followSetItem);
-							if (followSetItem != "$")
-							{
-								InsertFollowSet(childGroup[1], followSetItem);
-							}
-						}
-
-
-						for (auto lambdaSetItem : mLambdaSet)
-						{
-							
-							if (lambdaSetItem.compare(childGroup[1]) == 0)
-							{
-								
-								//current second
-
-								//	5. If there is a production of the form A->BC and C is in the lambda set, then add Follow(A) to
-								//	Follow(B)
-								for (auto followSetItem : mFollowSet[term.second.name])
-								{
-									//mFollowSet[childGroup[0]].push_back(followSetItem);
-									if (followSetItem != "$")
-									{
-										InsertFollowSet(childGroup[0], followSetItem);
-									}
-								}
-								//	6. If there is a production of the form A->BCD and C is in the lambda set, then add First(D) – lambda to
-								//	the Follow(B).
-								if (childGroup.size() >= 2 && IsUpper(childGroup[2])==true)
-								{
-									for (auto firstSetItem : mFirstSet[childGroup[2]])
-									{
-										if (firstSetItem != "?")
-										{
-											//mFollowSet[childGroup[1]].push_back(firstSetItem);
-											InsertFollowSet(childGroup[1], firstSetItem);
-										}
-									}
-								}
 								break;
 							}
-						
-							//Check through each child in childgroup
-							int rightBound;
-							for (rightBound = 0; rightBound <= childGroup.size(); rightBound++)
-							{
-								if (IsUpper(childGroup[rightBound]) != true)
-								{
-									break;
-								}
-							}
-							if (rightBound != 0)
-							{
-								bool allTerminal = true;
-								for (int counterTwo = 0; counterTwo < rightBound; counterTwo++)
-								{
-									
-									if (IsInLambdaSet(childGroup[counterTwo])==false)
-									{
-										allTerminal = false;
-									}
-								}
-								if (allTerminal == true)
-								{
-									//each character up to the terminal is a Nonterminal and in the lambda set
-									//the terminal needs to be added to the follow set for all Terminals before it
-									for (int counterTwo = 0; counterTwo < rightBound; counterTwo++)
-									{
-										InsertFollowSet(childGroup[counterTwo], childGroup[rightBound]);
-									}
-								}
-							}
-	
 						}
-					}			
+						if (secondTerminal>2)
+						{
+							//check to see if the non terminals
+							
+						}
+						else if (secondTerminal==2)
+						{
+
+							if (childGroup.size() == 2)
+							{
+								if (IsUpper(childGroup[1]) == true && IsInLambdaSet(childGroup[1])==false)
+								{
+									//terminal followed by a non terminal
+									for (auto firstSetItem : mFirstSet[childGroup[1]])
+									{
+										if (firstSetItem.compare("?")!=0)
+										{
+											InsertFollowSet(term.second.name, firstSetItem);
+										}
+									}
+
+								}
+					
+							}
+						}
+						else if (secondTerminal==1)
+						{
+							//terminal followed by a terminal
+							InsertFollowSet(term.second.name, childGroup[1]);
+						}
+					}
 				}
+				else if (rightBound != 0)
+				{
+					//2. If there is a production of the form : A->By where y is a terminal, add y to Follow(B)
+					//rightbound is terminal, the Term to the left is non terminal
+					if (IsUpper(childGroup[0]) == false)
+					{
+						InsertFollowSet(childGroup[rightBound - 1], childGroup[rightBound]);
+					}
+					
+					for (int counterTwo = 1; counterTwo < rightBound; counterTwo++)
+					{
+						//3. If there is a production of the form : A->BC where C is a non - terminal, then add First(C) – lambda
+						//to Follow(B)
+						for (auto firstSetItem : mFirstSet[childGroup[counterTwo]])
+						{
+							if (firstSetItem.compare("?") != 0 && firstSetItem.compare("$") != 0)
+							{
+								InsertFollowSet(childGroup[counterTwo - 1], firstSetItem);
+							}
+						}
+						// 4. If there is a production of the form A->BC, then add Follow(A) to Follow(C)
+	
+						for (auto followSetItem : mFollowSet[term.second.name])
+						{
+							if (followSetItem.compare("?") != 0 && followSetItem.compare("$"))
+							{
+								InsertFollowSet(childGroup[counterTwo], followSetItem);
+							}
+						}
+
+						//	5. If there is a production of the form A->BC and C is in the lambda set, then add Follow(A) to
+						//	Follow(B)
+
+						if (IsInLambdaSet(childGroup[counterTwo]))
+						{
+							for (auto followSetItem : mFollowSet[term.second.name])
+							{
+								if (followSetItem.compare("$") != 0){
+									InsertFollowSet(childGroup[counterTwo - 1], followSetItem);
+								}
+							}
+						}
+
+					}
+					if (rightBound > 1)
+					{
+						//6. If there is a production of the form A->BCD and C is in the lambda set, then add First(D) – lambda to
+						//the Follow(B).
+						for (int counterTwo = 2; counterTwo < rightBound; counterTwo++)
+						{
+							if (IsInLambdaSet(childGroup[counterTwo - 1]))
+							{
+								for (auto firstSetItem : mFirstSet[childGroup[counterTwo]])
+								{
+									if (firstSetItem.compare("?") != 0)
+									{
+										InsertFollowSet(childGroup[counterTwo - 2], firstSetItem);
+									}
+								}
+							}
+						}
+					}
+					bool allTerminal = true;
+					for (int counterTwo = 0; counterTwo < rightBound; counterTwo++)
+					{
+
+						if (IsInLambdaSet(childGroup[counterTwo]) == false)
+						{
+							allTerminal = false;
+							break;
+						}
+
+					}
+					if (allTerminal == true)
+					{
+						//each character up to the terminal is a Nonterminal and in the lambda set
+						//the terminal needs to be added to the follow set for all Terminals before it
+						for (int counterTwo = 0; counterTwo < rightBound; counterTwo++)
+						{
+							InsertFollowSet(childGroup[counterTwo], childGroup[rightBound]);
+						}
+					}
+
+				}
+
 			}
 		}
 	}
 }
+
+
 
 
 
@@ -647,7 +659,8 @@ void LL1::FirstSetRecurse(string term)
 	{
 		return;
 	}
-	
+
+
 	//1. Generate a set of non - terminals that can generate a lambda, called it the lambda set.
 	// FirstSet is called before this so the lambda set exists
 
