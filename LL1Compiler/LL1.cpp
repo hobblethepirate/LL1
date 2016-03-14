@@ -933,7 +933,7 @@ void LL1::GenerateTable()
 	//print out columns based on list of terminals
 	//look at all children for start set
 	//insert dummy entry into upper left corner
-	InsertInTable(0, 0, "\t"); //upper left corner entry
+	InsertInTable(0, 0, " "); //upper left corner entry
 
 	int count2 = 1; // used in loop below
 	map<string,int> StrToInt;
@@ -946,7 +946,7 @@ void LL1::GenerateTable()
 
 			//debug: this prints out every terminal
 			//cout << "Here you would print out row: " << 0 << " and column " << count2 << endl;
-			InsertInTable(count2, 0, term.first + "\t"); //Insert in table doesn't seem to work.
+			InsertInTable(count2, 0, term.first);
 			
 			StrToInt[term.first] = count2; //this will help with mapping when creating the entries, you can put in the nonterminal and get back column number
 
@@ -954,8 +954,32 @@ void LL1::GenerateTable()
 		}
 	}
 
-	//at this point the rows and cols are printed out on the grid. I'm going to work on a function called CheckFirstFirst:
+	//at this point the rows and cols are printed out on the grid. Use the cross reference function to find the cross section of the non_terminal and terminal:
 		// string LL1::CheckFirstFor(string checkthis, string forthis);
+	
+	int crossref_count = 0; //row count, increments at end of each term loop
+
+	for (auto term : mTermGroup)
+	{
+		if (!term.second.children.empty()) //non-terminals only
+		{
+
+			//for every character in the first set, insert into table
+			vector<string> vecStr = mFirstSet[term.first]; //vecStr is a vector containing all this term's terminals in first set
+
+			for (int count = 0; count < vecStr.size(); count++)
+			{
+				int row = crossref_count;
+				int col = StrToInt[vecStr[count]]; //terminal value's row
+				string terminal = vecStr[count]; //terminal value;
+				string non_terminal = term.first; //non-terminal value
+				string production = CrossReference(non_terminal, terminal);
+
+				InsertInTable(col, row, production);
+			}
+		}
+		crossref_count++;
+	}
 }
 
 
@@ -967,14 +991,34 @@ string LL1::CrossReference(string non_terminal, string terminal)
 	{
 		if (term.first == non_terminal) //find non_terminal in mTermGroup
 		{
-			//cycle through all childGroups/children for any groups that have the terminal parameter as a member of the first set, return the childgroup
-			//return childgroup e.g. "AaBc"
-		}
-		else
-		{
-			return nullptr;
+			for (int i = 0; i < term.second.childGroups.size();++i)
+			{
+				string production = "";
+				//generate string production to return if successful e.g. "ABCd"
+				for (int j = 0; j < term.second.childGroups[i].size();++j)
+				{
+					production += term.second.childGroups[i][j];
+				}
+				//e.g. production now == "ABCd"
+
+				for (int k = 0; k < term.second.childGroups[i].size();++k)
+				{
+					//if childgroup has terminal char you're looking for, then quit and return production
+					if (term.second.childGroups[i][k] == terminal)
+					{
+						return production;
+					}
+					//else if childGroup has lambda, then do nothing and continue through loop to keep checking for terminal
+					else if (CheckFor(non_terminal, '?') == true) {}
+
+					//if childgroup does not have lambda, break
+					else { break; }
+
+				}
+			}
+
 		}
 	}
 
-	return nullptr;
+	return "";
 }

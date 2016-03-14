@@ -52,7 +52,7 @@ int main()
 	system("pause");
 	
 
-	LL1D.LoadFile("grammar4.txt");
+	/*LL1D.LoadFile("grammar4.txt");
 	//LL1D.LeftFactor();
 	//cout << "Printing out the terms found for grammar 4" << endl;
 	LL1D.PrintTerms();
@@ -63,10 +63,10 @@ int main()
 	cout << "Follow set:" << endl;
 	LL1D.FollowSet();
 	LL1D.PrintFollowSet();
-	system("pause");
+	system("pause");*/
 
-	//LL1E.LoadFile("grammar5.txt");
-	//LL1E.LeftFactor();
-	//LL1E.PrintTerms();
+	/*LL1E.LoadFile("grammar5.txt");
+	LL1E.LeftFactor();
+	LL1E.PrintTerms();*/
 	return 0;
 }
