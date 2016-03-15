@@ -980,7 +980,7 @@ void LL1::GenerateTable()
 			
 			//for every character in the first set, insert into table
 			vector<string> vecStr = mFirstSet[term.first]; //vecStr is a vector containing all this term's terminals in first set
-
+		
 			for (int count = 0; count < vecStr.size(); count++)
 			{
 				int row = crossref_count;
@@ -996,10 +996,34 @@ void LL1::GenerateTable()
 				}
 				InsertInTable(col, row, production);
 			}
+
+			//FOLLOW SET handling
+			//now we handle follow sets if lambda is in the non-terminal
+			vector<string> followVec;
+			//if this term contains lambda, then we will need to grab the follow set terminals, so we can input lambda at the CrossReference of those terminals and this term
+			bool hasLambda = CheckFor(term.first, '?');
+			if (hasLambda)
+			{
+				followVec = mFollowSet[term.first]; //vector of terminals in follow set
+
+													//now we loop through the followVec to input '?' at the cross section of term.first and every terminal in the table
+				for (int i = 0; i < followVec.size();++i) //loop through follow vec and insert '?' at the cross
+				{
+					int row = crossref_count;
+					int col = StrToInt[followVec[i]];
+					string terminal = followVec[i];
+					string non_terminal = term.first;
+					string production = "?";
+
+					InsertInTable(col, row, production);
+				}
+			}
+
 			crossref_count++;
 		}
 
 	}
+
 }
 
 
