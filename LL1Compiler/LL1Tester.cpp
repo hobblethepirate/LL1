@@ -20,6 +20,10 @@ int main()
 	cout << "Follow set:" << endl;
 	LL1A.FollowSet();
 	LL1A.PrintFollowSet();
+	cout << "LL1 Table:" << endl;
+	LL1A.GenerateTable();
+	LL1A.PrintTable();
+
 	system("pause");
 
 	LL1B.LoadFile("grammar2.txt");
@@ -33,9 +37,11 @@ int main()
 	cout << "Follow set:" << endl;	
 	LL1B.FollowSet();
 	LL1B.PrintFollowSet();
+	LL1B.GenerateTable();
+	LL1B.PrintTable();
 	system("pause");
 
-	
+	//
 	LL1C.LoadFile("grammar3.txt");
 	LL1C.LeftFactor();
 	//cout << "Printing out the terms found for grammar 3" << endl;
@@ -47,23 +53,23 @@ int main()
 	cout << "Follow set:" << endl;
 	LL1C.FollowSet();
 	LL1C.PrintFollowSet();
-	//LL1C.GenerateTable();
-	//LL1C.PrintTable();
+	LL1C.GenerateTable();
+	LL1C.PrintTable();
 	system("pause");
-	
+	//
 
-	LL1D.LoadFile("grammar4.txt");
-	//LL1D.LeftFactor();
-	cout << "Printing out the terms found for grammar 4" << endl;
-	LL1D.PrintTerms();
-	cout << "First set:" << endl;
-	LL1D.FirstSet();
-	LL1D.PrintFirstSet();
+	//LL1D.LoadFile("grammar4.txt");
+	////LL1D.LeftFactor();
+	//cout << "Printing out the terms found for grammar 4" << endl;
+	//LL1D.PrintTerms();
+	//cout << "First set:" << endl;
+	//LL1D.FirstSet();
+	//LL1D.PrintFirstSet();
 
-	cout << "Follow set:" << endl;
-	LL1D.FollowSet();
-	LL1D.PrintFollowSet();
-	system("pause");
+	//cout << "Follow set:" << endl;
+	//LL1D.FollowSet();
+	//LL1D.PrintFollowSet();
+	//system("pause");
 
 	/*LL1E.LoadFile("grammar5.txt");
 	LL1E.LeftFactor();

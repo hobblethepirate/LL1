@@ -970,13 +970,14 @@ void LL1::GenerateTable()
 	//at this point the rows and cols are printed out on the grid. Use the cross reference function to find the cross section of the non_terminal and terminal:
 		// string LL1::CheckFirstFor(string checkthis, string forthis);
 	
-	int crossref_count = 0; //row count, increments at end of each term loop
+	//Having this start at the second row (it will ruin the header otherwise)
+	int crossref_count = 1; //row count, increments at end of each term loop
 
 	for (auto term : mTermGroup)
 	{
 		if (!term.second.children.empty()) //non-terminals only
 		{
-
+			
 			//for every character in the first set, insert into table
 			vector<string> vecStr = mFirstSet[term.first]; //vecStr is a vector containing all this term's terminals in first set
 
@@ -988,10 +989,16 @@ void LL1::GenerateTable()
 				string non_terminal = term.first; //non-terminal value
 				string production = CrossReference(non_terminal, terminal);
 
+
+				for (int count = 1; count < mTable[0].size(); count++)
+				{
+					InsertInTable(count, row, "  ");
+				}
 				InsertInTable(col, row, production);
 			}
+			crossref_count++;
 		}
-		crossref_count++;
+
 	}
 }
 
