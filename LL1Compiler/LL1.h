@@ -1,3 +1,11 @@
+/***********************************************************
+* Author:					James Shaver & Grant Kropf
+* Date Created:				3/1/2016
+* Last Modification Date:	3/14/2016
+* Lab Number:				CST 320 Lab 3
+* Filename:					LL1.H
+*
+***********************************************************/
 #ifndef  LL1_H
 #define  LL1_H
 
@@ -104,9 +112,11 @@ private:
 	//mFirstSet was getting tricky to think about, I just put it into something simpler
 	map<string, vector<string>> mFirstSet;
 
+	map<string, vector<string>> mFirstShadowSet;
 	//Contains the follow set for each production line after running the FirstSet, and then FollowSet Function.
 	map<string, vector<string>> mFollowSet;
 
+	map<string, vector<string>> mFollowShadowSet;
 	//This needs to be dynamic due to grammars changing in size.
 	map<int, map<int,string>> mTable;
 

@@ -1,3 +1,11 @@
+/***********************************************************
+* Author:					James Shaver & Grant Kropf
+* Date Created:				3/1/2016
+* Last Modification Date:	3/14/2016
+* Lab Number:				CST 320 Lab 3
+* Filename:					LL1.cpp
+*
+***********************************************************/
 #include "LL1.h"
 #include <fstream>
 #include <iostream>
@@ -371,6 +379,8 @@ void LL1::FirstSet()
 		//term.first is set name
 		if (IsTerminal(term.second) == false)
 		{
+			//set the current rule
+			
 			for (auto child : term.second.childGroups)
 			{
 
@@ -384,6 +394,7 @@ void LL1::FirstSet()
 					{
 						//mFirstSet[term.second.name].push_back(child[0]);
 						InsertFirstSet(term.second.name, child[0]);
+						
 					}
 					else
 					{
@@ -959,13 +970,22 @@ void LL1::GenerateTable()
 
 			//debug: this prints out every terminal
 			//cout << "Here you would print out row: " << 0 << " and column " << count2 << endl;
-			InsertInTable(count2, 0, term.first);
-			
+			if (term.first.compare("?") == 0)
+			{
+				InsertInTable(count2, 0, "$");
+
+			}
+			else
+			{
+				InsertInTable(count2, 0, term.first);
+			}
 			StrToInt[term.first] = count2; //this will help with mapping when creating the entries, you can put in the nonterminal and get back column number
 
-			count2++;			
+			count2++;
+			
 		}
 	}
+
 
 	//at this point the rows and cols are printed out on the grid. Use the cross reference function to find the cross section of the non_terminal and terminal:
 		// string LL1::CheckFirstFor(string checkthis, string forthis);
@@ -994,6 +1014,7 @@ void LL1::GenerateTable()
 				{
 					InsertInTable(count, row, "  ");
 				}
+
 				InsertInTable(col, row, production);
 			}
 

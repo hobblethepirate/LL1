@@ -1,3 +1,11 @@
+/***********************************************************
+* Author:					James Shaver & Grant Kropf
+* Date Created:				3/1/2016
+* Last Modification Date:	3/14/2016
+* Lab Number:				CST 320 Lab 3
+* Filename:					LL1Tester.cpp
+*
+***********************************************************/
 #include <iostream> 
 #include <map>
 #include "LL1.h"
@@ -5,7 +13,7 @@ using namespace std;
 
 int main()
 {
-	LL1 LL1A ,LL1B, LL1C, LL1D, LL1E;
+	LL1 LL1A ,LL1B, LL1C;
 
 	cout << "LL1 Compiler Tester" << endl;
 	
@@ -56,23 +64,6 @@ int main()
 	LL1C.GenerateTable();
 	LL1C.PrintTable();
 	system("pause");
-	//
 
-	//LL1D.LoadFile("grammar4.txt");
-	////LL1D.LeftFactor();
-	//cout << "Printing out the terms found for grammar 4" << endl;
-	//LL1D.PrintTerms();
-	//cout << "First set:" << endl;
-	//LL1D.FirstSet();
-	//LL1D.PrintFirstSet();
-
-	//cout << "Follow set:" << endl;
-	//LL1D.FollowSet();
-	//LL1D.PrintFollowSet();
-	//system("pause");
-
-	/*LL1E.LoadFile("grammar5.txt");
-	LL1E.LeftFactor();
-	LL1E.PrintTerms();*/
 	return 0;
 }
